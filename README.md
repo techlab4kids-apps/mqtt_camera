@@ -5,6 +5,9 @@ This is an Android camera app that connects to an MQTT server and lets you
 remote-control it. Images are triggered by sending a "shutter" message and the
 camera subsequently sends the image via MQTT.
 
+Notes on TechLAB4Kids changes: we starts to use this code for integrate the tool we use in our activities with children. 
+We cannot support it but any suggestion or problem is welcome. Thanks :-)
+
 Features
 --------
 
