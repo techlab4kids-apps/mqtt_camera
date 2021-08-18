@@ -44,10 +44,6 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -58,6 +54,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,7 +73,7 @@ import info.staticfree.mqtt_camera.view.AutoFitTextureView;
 
 @SuppressWarnings("MagicNumber")
 public class CameraFragment extends Fragment
-        implements FragmentCompat.OnRequestPermissionsResultCallback,
+        implements ActivityCompat.OnRequestPermissionsResultCallback,
         MqttRemote.RemoteControlCamera {
 
     @Nullable
@@ -430,10 +431,10 @@ public class CameraFragment extends Fragment
     }
 
     private void requestCameraPermission() {
-        if (FragmentCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), Manifest.permission.CAMERA)) {
             new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
         } else {
-            FragmentCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA },
+            ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.CAMERA },
                     REQUEST_CAMERA_PERMISSION);
         }
     }
@@ -919,7 +920,7 @@ public class CameraFragment extends Fragment
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.request_permission)
                     .setPositiveButton(android.R.string.ok,
-                            (dialog, which) -> FragmentCompat.requestPermissions(parent,
+                            (dialog, which) -> ActivityCompat.requestPermissions(parent.getActivity(),
                                     new String[] { Manifest.permission.CAMERA },
                                     REQUEST_CAMERA_PERMISSION))
                     .setNegativeButton(android.R.string.cancel,

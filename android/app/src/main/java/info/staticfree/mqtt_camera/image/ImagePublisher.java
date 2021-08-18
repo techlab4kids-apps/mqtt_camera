@@ -1,7 +1,8 @@
 package info.staticfree.mqtt_camera.image;
 
 import android.media.Image;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
 
@@ -16,7 +17,7 @@ public class ImagePublisher implements Runnable {
     private final MqttRemote mqttRemote;
 
     public ImagePublisher(@NonNull Image image, @NonNull MqttRemote mqttRemote,
-            @NonNull String subTopic) {
+                          @NonNull String subTopic) {
         this.image = image;
         this.mqttRemote = mqttRemote;
         this.subTopic = subTopic;

@@ -6,8 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
 
 /**
  * Keep the screen on until the battery runs low.

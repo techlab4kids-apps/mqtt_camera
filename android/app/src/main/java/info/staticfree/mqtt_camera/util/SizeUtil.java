@@ -1,8 +1,9 @@
 package info.staticfree.mqtt_camera.util;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Size;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +31,7 @@ public final class SizeUtil {
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
     public static Size chooseOptimalSize(@NonNull Size[] choices, int textureViewWidth,
-            int textureViewHeight, int maxWidth, int maxHeight, Size aspectRatio) {
+                                         int textureViewHeight, int maxWidth, int maxHeight, Size aspectRatio) {
 
         // Collect the supported resolutions that are at least as big as the preview Surface
         List<Size> bigEnough = new ArrayList<>();
