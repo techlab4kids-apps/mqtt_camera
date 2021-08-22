@@ -5,6 +5,9 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,15 +34,31 @@ public class ImageSaver implements Runnable {
      */
     private final File parentFolder;
     private final MqttRemote mqttRemote;
+    private JSONObject payload = null;
     private File file;
     private String fileName;
-    public ImageSaver(ByteBuffer image, File mFile, MqttRemote mqttRemote) {
+
+    public ImageSaver(ByteBuffer image, File mFile, String payload, MqttRemote mqttRemote) {
         byteBuffer = image;
         parentFolder = mFile;
+
+        try {
+            this.payload = new JSONObject(payload);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         this.mqttRemote = mqttRemote;
 
         SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyy-MM-dd-HHmmssZ");
-        fileName = String.format("mqtt_img_%s.", simpleFormatter.format(new Date()));
+
+        String fileNamePrefix = "mqtt_img";
+        try {
+            fileNamePrefix = this.payload.getString("fileNamePrefix");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        fileName = String.format("%s_%s.", fileNamePrefix, simpleFormatter.format(new Date()));
 
         file = new File(parentFolder, fileName + "bmp");
     }

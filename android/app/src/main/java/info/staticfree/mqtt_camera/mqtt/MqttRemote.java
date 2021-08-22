@@ -195,7 +195,7 @@ public class MqttRemote {
 
     private void onMqttMessage(@NonNull String topic, @NonNull MqttMessage message) {
         if (getMqttSubTopic("shutter").equals(topic)) {
-            camera.takePicture();
+            camera.takePicture(new String(message.getPayload()));
         } else if (getMqttSubTopic("focus").equals(topic)) {
             camera.refocus();
         } else if (getMqttSubTopic("setting/auto_focus").equals(topic)) {
@@ -222,7 +222,7 @@ public class MqttRemote {
     }
 
     public interface RemoteControlCamera {
-        void takePicture();
+        void takePicture(String s);
 
         void refocus();
 

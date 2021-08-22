@@ -72,7 +72,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import info.staticfree.mqtt_camera.R;
-import info.staticfree.mqtt_camera.image.ImagePublisher;
 import info.staticfree.mqtt_camera.image.ImageSaver;
 import info.staticfree.mqtt_camera.mqtt.MqttRemote;
 import info.staticfree.mqtt_camera.util.SizeUtil;
@@ -267,17 +266,14 @@ public class CameraFragment extends Fragment
             File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath(),"mqtt_camera");
             try {
                 storageDir.mkdir();
-                backgroundHandler.post(new ImageSaver(buffer, storageDir, mqttRemote));
-
-//                if (mqttRemote != null) {
-//                    backgroundHandler.post(new ImagePublisher(buffer, mqttRemote, "image"));
-//                }
+                backgroundHandler.post(new ImageSaver(buffer, storageDir, payload, mqttRemote));
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+    private String payload;
 
     private ByteBuffer byteBufferClone(ByteBuffer original) {
         ByteBuffer clone = ByteBuffer.allocate(original.capacity());
@@ -413,7 +409,7 @@ public class CameraFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(v -> takePicture());
+        view.findViewById(R.id.picture).setOnClickListener(v -> takePicture(""));
         view.findViewById(R.id.focus).setOnClickListener(v -> refocus());
         textureView = (AutoFitTextureView) view.findViewById(R.id.camera_surface);
     }
@@ -781,9 +777,11 @@ public class CameraFragment extends Fragment
 
     /**
      * Initiate a still image capture.
+     * @param s
      */
     @Override
-    public void takePicture() {
+    public void takePicture(String message) {
+        this.payload = message;
         if (autoFocus) {
             lockFocus();
         } else {
