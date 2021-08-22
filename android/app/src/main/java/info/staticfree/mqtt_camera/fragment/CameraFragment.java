@@ -40,8 +40,11 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -57,9 +60,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Semaphore;
@@ -67,6 +73,7 @@ import java.util.concurrent.TimeUnit;
 
 import info.staticfree.mqtt_camera.R;
 import info.staticfree.mqtt_camera.image.ImagePublisher;
+import info.staticfree.mqtt_camera.image.ImageSaver;
 import info.staticfree.mqtt_camera.mqtt.MqttRemote;
 import info.staticfree.mqtt_camera.util.SizeUtil;
 import info.staticfree.mqtt_camera.view.AutoFitTextureView;
@@ -239,14 +246,47 @@ public class CameraFragment extends Fragment
     private final ImageReader.OnImageAvailableListener onImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
 
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onImageAvailable(ImageReader reader) {
-            if (mqttRemote != null) {
-                backgroundHandler.post(new ImagePublisher(reader.acquireNextImage(), mqttRemote,
-                        "image"));
+            Image acquiredImage = reader.acquireNextImage();
+            ByteBuffer byteBuffer = acquiredImage.getPlanes()[0].getBuffer();
+            ByteBuffer buffer = byteBufferClone(byteBuffer);
+            acquiredImage.close();
+
+            boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+
+            if (!hasPermission) {
+                final int REQUEST_WRITE_STORAGE = 112;
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_WRITE_STORAGE);
+            }
+
+            File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath(),"mqtt_camera");
+            try {
+                storageDir.mkdir();
+                backgroundHandler.post(new ImageSaver(buffer, storageDir, mqttRemote));
+
+//                if (mqttRemote != null) {
+//                    backgroundHandler.post(new ImagePublisher(buffer, mqttRemote, "image"));
+//                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     };
+
+    private ByteBuffer byteBufferClone(ByteBuffer original) {
+        ByteBuffer clone = ByteBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
+    }
 
     /**
      * {@link CaptureRequest.Builder} for the camera preview

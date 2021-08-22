@@ -5,8 +5,9 @@ This is an Android camera app that connects to an MQTT server and lets you
 remote-control it. Images are triggered by sending a "shutter" message and the
 camera subsequently sends the image via MQTT.
 
-Notes on TechLAB4Kids changes: we starts to use this code for integrate the tool we use in our activities with children. 
-We cannot support it but any suggestion or problem is welcome. Thanks :-)
+**Notes on TechLAB4Kids changes:
+We starts to use this code for integrate the tool we use in our activities with children. 
+We cannot support it but any suggestion or problem is welcome. Thanks :-)**
 
 Features
 --------
@@ -17,6 +18,12 @@ Features
 * Focus-lock mode
 * Screen dimming feature
 * Multiple camera support
+
+TechLAB4Kids features
+
+* Topic is now in the {site}/camera/{uuid} format in order to manage multiple cameras in multiple sites
+* A compressed 1024p jpg and an uncompressed bmp file are saved on device
+* MQTT configuration has default config appropriate for TechLAB4Kids activities
 
 Usage
 -----
@@ -29,10 +36,10 @@ MQTT Messages
 -------------
 
 When the app first starts, it generates a distinct UUID for that given device.
-All messages will be sent under the topic `camera/{uuid}` where `{uuid}` is the
+All messages will be sent under the topic `{site}/camera/{uuid}` where `{uuid}` is the
 UUID of the camera. This ID can be configured in the settings if desired.
 
-### Topic: `camera/{uuid}/status`
+### Topic: `{site}/camera/{uuid}/status`
 
 This represents the MQTT connectivity status of the camera.
 
@@ -41,15 +48,15 @@ Payload:
 * `connected` - the app is running and connected to the MQTT broker
 * `disconnected` - the app has disconnected from the MQTT broker
 
-### Topic: `camera/{uuid}/shutter`
+### Topic: `{site}/camera/{uuid}/shutter`
 
 Send this message to trigger the shutter. Any payload will be ignored.
 
-### Topic: `camera/{uuid}/image`
+### Topic: `{site}/camera/{uuid}/image`
 
 The payload of this message is the JPEG image taken by the camera.
 
-### Topic: `camera/{uuid}/battery`
+### Topic: `{site}/camera/{uuid}/battery`
 
 Payload:
 
@@ -63,7 +70,7 @@ A JSON object that looks like this:
 }
 ```
 
-### Topic: `camera/{uuid}/focus`
+### Topic: `{site}/camera/{uuid}/focus`
 
 When this message is received, the camera will re-focus the image.
 
@@ -76,7 +83,7 @@ Payload:
 * `0` — the camera will not change focus when the shutter is triggered. This is
   meant to be used with the `focus` message.
 
-### Topic: `camera/{uuid}/setting/dim_screen`
+### Topic: `{site}/camera/{uuid}/setting/dim_screen`
 
 * `1` — the camera will dim the screen and disable the preview image to help
   save battery

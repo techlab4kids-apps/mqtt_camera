@@ -29,9 +29,14 @@ public class MqttRemote {
     private static final String TAG = MqttRemote.class.getSimpleName();
 
     private static final String KEY_UUID = "mqtt_uuid";
+    private static final String KEY_SITE = "mqtt_site";
 
     @NonNull
     private final String uuid;
+
+    @NonNull
+    private String site;
+
     @NonNull
     private final Context context;
     @NonNull
@@ -78,6 +83,7 @@ public class MqttRemote {
         this.context = context;
         this.camera = camera;
         uuid = getOrCreateId();
+
         batteryMonitor = new BatteryMonitor(context, batteryObserver);
     }
 
@@ -103,6 +109,8 @@ public class MqttRemote {
         if (!preferences.getBoolean("mqtt_remote_enable", false)) {
             return;
         }
+
+        site = preferences.getString("mqtt_site", null);
 
         String host = preferences.getString("mqtt_hostname", null);
         int port = Integer.valueOf(preferences.getString("mqtt_port", "0"));
@@ -182,7 +190,7 @@ public class MqttRemote {
 
     @NonNull
     private String getMqttSubTopic(@NonNull String subTopic) {
-        return "camera/" + uuid + '/' + subTopic;
+        return String.format("%s/camera/%s/%s",site, uuid, subTopic);
     }
 
     private void onMqttMessage(@NonNull String topic, @NonNull MqttMessage message) {

@@ -15,7 +15,7 @@
 
     <string name="pref_header_mqtt">MQTT</string>
 
-    <string name="pref_mqtt_hostname_default">example.org</string>
+    <string name="pref_mqtt_hostname_default">mqtt.flespi.io</string>
     <string name="pref_mqtt_hostname_title">MQTT broker hostname</string>
     <string name="pref_mqtt_password_title">Password</string>
     <string name="pref_mqtt_port_default">1883</string>
@@ -24,6 +24,11 @@
     <string name="pref_mqtt_remote_control_title">MQTT Remote</string>
     <string name="pref_mqtt_ssl_title">Use SSL/TLS</string>
     <string name="pref_mqtt_username_title">Username</string>
-    <string name="pref_mqtt_uuid_summary">This will publish images to topic camera/{UUID}/image</string>
+    <string name="pref_mqtt_username_default">FlespiToken 6mcDMRfUctThiFyhFk6sIXDAySQAcRO83PzDwEnwV5D2yZ9174kDRL3gtKEtpipg</string>
+    <string name="pref_mqtt_uuid_summary">This will publish images to topic {site}/camera/{UUID}/image</string>
     <string name="pref_mqtt_uuid_title">Device UUID</string>
+    <string name="pref_mqtt_site_title">Site</string>
+    <string name="pref_mqtt_site">TechLAB4Kids</string>
+    <string name="pref_mqtt_site_default">TechLAB4Kids</string>
+    <string name="pref_mqtt_site_summary">This will publish images to topic {site}/camera/{UUID}/image</string>
 </resources>

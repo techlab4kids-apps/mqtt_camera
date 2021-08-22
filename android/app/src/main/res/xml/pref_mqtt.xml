@@ -31,6 +31,7 @@
         android:key="mqtt_ssl"
         android:title="@string/pref_mqtt_ssl_title" />
     <EditTextPreference
+        android:defaultValue="@string/pref_mqtt_username_default"
         android:dependency="mqtt_remote_enable"
         android:inputType="textShortMessage|textNoSuggestions"
         android:key="mqtt_username"
@@ -40,6 +41,15 @@
         android:inputType="textPassword"
         android:key="mqtt_password"
         android:title="@string/pref_mqtt_password_title" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_mqtt_site_default"
+        android:dependency="mqtt_remote_enable"
+        android:inputType="textShortMessage|textNoSuggestions"
+        android:key="mqtt_site"
+        android:summary="@string/pref_mqtt_site_summary"
+        android:title="@string/pref_mqtt_site_title" />
+
     <EditTextPreference
         android:dependency="mqtt_remote_enable"
         android:inputType="textShortMessage|textNoSuggestions"
